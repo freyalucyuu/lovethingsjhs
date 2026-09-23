@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lovethingsjhs 🌸 - Memory Vault & Love Notes</title>
+  
+  <!-- PWA & Mobile App Settings (Android) -->
+  <meta name="theme-color" content="#E8D7F5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <style>
+    :root {
+      --soft-pink: #FFC6FF;
+      --pastel-lavender: #E8D7F5;
+      --mint-cream: #D8F3DC;
+      --warm-cream: #FFF9F0;
+      --deep-charcoal: #333333;
+      --lavender-dark: #5A3E85;
+      --lavender-text: #6B4E99;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--warm-cream);
+      color: var(--deep-charcoal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 2rem;
+    }
+
+    header {
+      width: 100%;
+      background-color: var(--pastel-lavender);
+      padding: 1rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 198, 255, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: var(--lavender-dark);
+      font-family: 'Georgia', serif;
+    }
+
+    header p {
+      font-size: 0.75rem;
+      color: var(--lavender-text);
+      margin-top: 0.25rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border: 2px solid var(--pastel-lavender);
+      margin-bottom: 1.25rem;
+    }
+
+    .title-badge {
+      display: inline-block;
+      background: rgba(255, 198, 255, 0.4);
+      color: var(--lavender-text);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      color: var(--lavender-dark);
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtext {
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--lavender-dark);
+      margin-bottom: 0.35rem;
+    }
+
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 1rem;
+      border: 1px solid var(--pastel-lavender);
+      background-color: var(--warm-cream);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.85rem;
+      background-color: var(--soft-pink);
+      color: var(--lavender-dark);
+      font-weight: bold;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(255, 198, 255, 0.5);
+      transition: transform 0.2s;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .envelope-box {
+      background-color: var(--warm-cream);
+      border: 2px dashed var(--soft-pink);
+      border-radius: 1.25rem;
+      padding: 1.25rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .envelope-closed .icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .envelope-open {
+      text-align: left;
+      font-style: italic;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #444;
+    }
+
+    .love-btn {
+      width: 5rem;
+      height: 5rem;
+      background: linear-gradient(135deg, var(--soft-pink), var(--pastel-lavender));
+      border-radius: 50%;
+      border: 4px solid white;
+      font-size: 2.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem auto;
+      box-shadow: 0 8px 20px rgba(255, 198, 255, 0.6);
+      transition: transform 0.15s;
+    }
+
+    .love-btn:active {
+      transform: scale(0.88);
+    }
+
+    .love-counter {
+      display: inline-block;
+      background: var(--warm-cream);
+      padding: 0.35rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid var(--soft-pink);
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: var(--lavender-text);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .polaroid {
+      background: var(--warm-cream);
+      padding: 0.6rem;
+      border-radius: 1rem;
+      border: 1px solid var(--pastel-lavender);
+      text-align: center;
+    }
+
+    .polaroid .img-placeholder, .polaroid img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      margin-bottom: 0.5rem;
+      background-color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .guestbook-feed {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 1rem;
+      text-align: left;
+    }
+
+    .guestbook-item {
+      background: var(--warm-cream);
+      padding: 0.75rem;
+      border-radius: 1rem;
+      border: 1px solid var(--pastel-lavender);
+      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--lavender-text);
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>lovethingsjhs 🌸</h1>
+    <p>Memory Vault & Love Notes Junior High School</p>
+  </header>
+
+  <div class="container">
+
+    <!-- F-01 & F-02: LANDING & VERIFIKASI BIODATA -->
+    <div id="section-landing" class="card">
+      <div style="text-align: center;">
+        <span class="title-badge">Verifikasi Sahabat SMP 🎀</span>
+        <h2>Siapa Nama Kamu? ✨</h2>
+        <p class="subtext">Pilih nama, unggah foto kenangan berdua, dan isi biodata untuk membuka vault kenangan.</p>
+      </div>
+
+      <form id="form-verify" onsubmit="handleVerification(event)">
+        <div class="form-group">
+          <label>Pilih Nama Sahabat:</label>
+          <select id="select-friend" required>
+            <option value="">-- Pilih Namamu --</option>
+            <option value="Siti">Siti</option>
+            <option value="Budi">Budi</option>
+            <option value="Rara">Rara</option>
+            <option value="Daffa">Daffa</option>
+            <option value="Sahabat Spesial">Sahabat Lainnya</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Nama Panggilan Masa SMP:</label>
+          <input type="text" id="input-nickname" required placeholder="Contoh: Rara Ceria" />
+        </div>
+
+        <div class="form-group">
+          <label>Kenangan Terkonyol Saat SMP:</label>
+          <textarea id="input-memory" rows="2" placeholder="Pernah dihukum keliling lapangan bareng..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Foto Kenangan Berdua (Verifikasi):</label>
+          <input type="file" id="input-photo" accept="image/*" capture="environment" onchange="previewPhoto(event)" required />
+          <div id="preview-box" class="hidden" style="margin-top: 0.5rem; text-align: center;">
+            <img id="preview-img" src="" style="width: 100px; height: 100px; object-fit: cover; border-radius: 1rem; border: 3px solid var(--soft-pink);" />
+            <span style="display: block; font-size: 0.7rem; color: green; margin-top: 0.25rem;">✓ Foto Terpasang</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">Buka Vault Kenangan 💌</button>
+      </form>
+    </div>
+
+    <!-- DASHBOARD UTAMA -->
+    <div id="section-dashboard" class="hidden">
+
+      <!-- Greeting Banner -->
+      <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--pastel-lavender), #FFF9F0);">
+        <h2>Halo, <span id="dash-name" style="color: var(--lavender-text);"></span>! 👋</h2>
+        <p class="subtext">Selamat datang di <b>lovethingsjhs</b> memory vault.</p>
+        <div id="dash-memory" style="font-size: 0.75rem; font-style: italic; color: #555; background: white; padding: 0.5rem; border-radius: 0.75rem; margin-top: 0.5rem;"></div>
+      </div>
+
+      <!-- F-03: Surat Amplop Interaktif -->
+      <div class="card" style="text-align: center;">
+        <h3 style="color: var(--lavender-dark); font-size: 0.95rem; margin-bottom: 0.75rem;">💌 Surat Khusus Untukmu</h3>
+        <div id="envelope-box" class="envelope-box" onclick="toggleEnvelope()">
+          <div id="envelope-closed" class="envelope-closed">
+            <span class="icon">✉️</span>
+            <p style="font-size: 0.8rem; font-weight: bold; color: var(--lavender-text);">Klik Amplop Untuk Membuka Pesan!</p>
+          </div>
+          <div id="envelope-open" class="envelope-open hidden">
+            <p style="font-weight: bold; color: var(--lavender-dark); margin-bottom: 0.5rem;">Untuk: <span id="target-name"></span> 💕</p>
+            <p id="envelope-content">"Terima kasih sudah menjadi sahabat yang paling menyenangkan dari jaman SMP. Banyak tawa dan kenangan manis yang selalu tersimpan. Semoga kamu selalu bahagia dan sukses terus ya! 💕"</p>
+            <span style="display: block; text-align: right; font-size: 0.65rem; color: #888; margin-top: 0.75rem;">- Dari Sahabatmu</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- F-04: Love Sign Button -->
+      <div class="card" style="text-align: center;">
+        <h3 style="color: var(--lavender-dark); font-size: 0.95rem;">Kirim Tanda Cinta 💖</h3>
+        <p class="subtext">Tap tombol di bawah untuk mengirim cinta!</p>
+        <button class="love-btn" onclick="sendLove()">💖</button>
+        <div class="love-counter">Total Love: <span id="love-count">128</span></div>
+      </div>
+
+      <!-- F-05: Galeri Foto Polaroid & Upload -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="color: var(--lavender-dark); font-size: 0.95rem;">🖼️ Galeri Memori</h3>
+          <label style="background: var(--mint-cream); color: #2D6A4F; font-size: 0.7rem; font-weight: bold; padding: 0.35rem 0.75rem; border-radius: 0.75rem; cursor: pointer;">
+            + Upload Foto
+            <input type="file" accept="image/*" capture="environment" onchange="uploadPhoto(event)" style="display: none;" />
+          </label>
+        </div>
+
+        <div id="gallery-grid" class="gallery-grid">
+          <div class="polaroid">
+            <div class="img-placeholder">🏫</div>
+            <span style="font-size: 0.75rem; font-weight: bold; color: var(--lavender-dark);">Kantin SMP 📸</span>
+          </div>
+          <div class="polaroid">
+            <div class="img-placeholder">🚌</div>
+            <span style="font-size: 0.75rem; font-weight: bold; color: var(--lavender-dark);">Study Tour 🚌</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- F-06: Guestbook -->
+      <div class="card">
+        <h3 style="color: var(--lavender-dark); font-size: 0.95rem; margin-bottom: 0.5rem;">📝 Buku Pesan Balasan</h3>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="guestbook-input" placeholder="Tulis balasan..." style="flex: 1;" />
+          <button onclick="addGuestbook()" style="background: var(--soft-pink); border: none; padding: 0.5rem 1rem; border-radius: 1rem; font-weight: bold; color: var(--lavender-dark); cursor: pointer;">Kirim</button>
+        </div>
+
+        <div id="guestbook-feed" class="guestbook-feed">
+          <div class="guestbook-item">
+            <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: bold; color: var(--lavender-text); margin-bottom: 0.25rem;">
+              <span>Siti ✨</span>
+              <span>Baru Saja</span>
+            </div>
+            <p>Kangen banget jaman SMP! Makasih udah buat web ini 💕</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Dibuat dengan cinta untuk sahabat SMP 🌸</p>
+    <p style="font-size: 0.65rem; color: #aaa; margin-top: 0.25rem;">lovethingsjhs &copy; 2026</p>
+  </footer>
+
+  <script>
+    let photoUrl = '';
+    let count = 128;
+    let isEnvelopeOpen = false;
+    let currentNickname = '';
+
+    function previewPhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        photoUrl = URL.createObjectURL(file);
+        document.getElementById('preview-img').src = photoUrl;
+        document.getElementById('preview-box').classList.remove('hidden');
+      }
+    }
+
+    function handleVerification(event) {
+      event.preventDefault();
+      currentNickname = document.getElementById('input-nickname').value;
+      const memory = document.getElementById('input-memory').value;
+
+      document.getElementById('dash-name').innerText = currentNickname;
+      document.getElementById('target-name').innerText = currentNickname;
+      if (memory) {
+        document.getElementById('dash-memory').innerText = `💭 Kenangan: "${memory}"`;
+      }
+
+      if (photoUrl) {
+        addPolaroid(photoUrl, 'Foto Verifikasi 📸', currentNickname);
+      }
+
+      document.getElementById('section-landing').classList.add('hidden');
+      document.getElementById('section-dashboard').classList.remove('hidden');
+    }
+
+    function toggleEnvelope() {
+      isEnvelopeOpen = !isEnvelopeOpen;
+      if (isEnvelopeOpen) {
+        document.getElementById('envelope-closed').classList.add('hidden');
+        document.getElementById('envelope-open').classList.remove('hidden');
+      } else {
+        document.getElementById('envelope-open').classList.add('hidden');
+        document.getElementById('envelope-closed').classList.remove('hidden');
+      }
+    }
+
+    function sendLove() {
+      count++;
+      document.getElementById('love-count').innerText = count;
+    }
+
+    function uploadPhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        addPolaroid(url, 'Kenangan Baru 🌸', currentNickname || 'Sahabat');
+      }
+    }
+
+    function addPolaroid(url, title, sender) {
+      const grid = document.getElementById('gallery-grid');
+      const div = document.createElement('div');
+      div.className = 'polaroid';
+      div.innerHTML = `<img src="${url}" style="width:100%; height:110px; object-fit:cover; border-radius:0.75rem; margin-bottom:0.5rem;" /><span style="font-size:0.75rem; font-weight:bold; color:var(--lavender-dark);">${title}</span><br/><span style="font-size: 0.6rem; color: #888;">${sender}</span>`;
+      grid.prepend(div);
+    }
+
+    function addGuestbook() {
+      const input = document.getElementById('guestbook-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const feed = document.getElementById('guestbook-feed');
+      const item = document.createElement('div');
+      item.className = 'guestbook-item';
+      item.innerHTML = `<div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: bold; color: var(--lavender-text); margin-bottom: 0.25rem;"><span>${currentNickname || 'Sahabat'} ✨</span><span>Baru Saja</span></div><p>${val}</p>`;
+      feed.prepend(item);
+      input.value = '';
+    }
+  </script>
+</body>
+</html>
