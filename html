@@ -1,0 +1,384 @@
+"use client";
+
+import React, { useState, ChangeEvent } from "react";
+
+interface PhotoItem {
+  id: number;
+  url: string;
+  caption: string;
+  sender: string;
+}
+
+interface GuestbookMessage {
+  id: number;
+  name: string;
+  text: string;
+  date: string;
+}
+
+export default function LoveThingsJHS() {
+  // State Navigasi & Verifikasi
+  const [step, setStep] = useState<"landing" | "dashboard">("landing");
+  const [selectedFriend, setSelectedFriend] = useState<string>("");
+  const [verifyPhoto, setVerifyPhoto] = useState<string | null>(null);
+  const [nickname, setNickname] = useState<string>("");
+  const [memoryText, setMemoryText] = useState<string>("");
+
+  // State Fitur Dashboard
+  const [isEnvelopeOpen, setIsEnvelopeOpen] = useState<boolean>(false);
+  const [loveCount, setLoveCount] = useState<number>(12);
+  const [hearts, setHearts] = useState<{ id: number; x: number }[]>([]);
+
+  // State Galeri & Guestbook
+  const [gallery, setGallery] = useState<PhotoItem[]>([
+    {
+      id: 1,
+      url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&auto=format&fit=crop",
+      caption: "Kantin SMP jaman dulu 📸",
+      sender: "Pemilik Web",
+    },
+    {
+      id: 2,
+      url: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&auto=format&fit=crop",
+      caption: "Foto pas study tour 🚌",
+      sender: "Pemilik Web",
+    },
+  ]);
+
+  const [guestbook, setGuestbook] = useState<GuestbookMessage[]>([
+    {
+      id: 1,
+      name: "Sahabat SMP",
+      text: "Makasih udah bikin web lucu ini! Kangen masa-masa kelas 8 💖",
+      date: "Hari ini",
+    },
+  ]);
+
+  const [newMessage, setNewMessage] = useState<string>("");
+
+  // Handler Upload Foto Verifikasi
+  const handleVerifyUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setVerifyPhoto(URL.createObjectURL(file));
+    }
+  };
+
+  // Handler Masuk ke Dashboard
+  const handleStart = () => {
+    if (!selectedFriend || !verifyPhoto || !nickname) {
+      alert("Mohon pilih nama, isi nama panggilan, dan unggah foto verifikasi berdua ya!");
+      return;
+    }
+    setStep("dashboard");
+  };
+
+  // Handler Love Sign Button
+  const handleLoveClick = () => {
+    setLoveCount((prev) => prev + 1);
+    const newHeart = {
+      id: Date.now(),
+      x: Math.random() * 80 + 10, // posisi horizontal acak (%)
+    };
+    setHearts((prev) => [...prev, newHeart]);
+    setTimeout(() => {
+      setHearts((prev) => prev.filter((h) => h.id !== newHeart.id));
+    }, 1500);
+  };
+
+  // Handler Upload Foto Baru ke Galeri
+  const handleGalleryUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const newPhoto: PhotoItem = {
+        id: Date.now(),
+        url: URL.createObjectURL(file),
+        caption: `Kenangan baru dari ${nickname}`,
+        sender: nickname,
+      };
+      setGallery([newPhoto, ...gallery]);
+    }
+  };
+
+  // Handler Kirim Pesan Balasan
+  const handleAddMessage = () => {
+    if (!newMessage.trim()) return;
+    const msg: GuestbookMessage = {
+      id: Date.now(),
+      name: nickname || "Sahabat",
+      text: newMessage,
+      date: "Baru saja",
+    };
+    setGuestbook([msg, ...guestbook]);
+    setNewMessage("");
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FFF9F0] text-[#333333] font-sans relative overflow-x-hidden pb-12">
+      {/* Confetti Hati Melayang */}
+      {hearts.map((h) => (
+        <div
+          key={h.id}
+          className="fixed bottom-20 text-3xl pointer-events-none animate-bounce z-50 transition-all duration-1000 ease-out"
+          style={{ left: `${h.x}%`, opacity: 0.8 }}
+        >
+          💖
+        </div>
+      ))}
+
+      {/* Header Aplikasi */}
+      <header className="w-full bg-[#E8D7F5] py-4 px-6 text-center shadow-sm border-b border-[#FFC6FF]/50 sticky top-0 z-40">
+        <h1 className="text-2xl font-bold tracking-wide text-[#5A3E85] font-serif">
+          lovethingsjhs 🌸
+        </h1>
+        <p className="text-xs text-[#6B4E99] mt-1">
+          Memory Vault & Love Notes Junior High School
+        </p>
+      </header>
+
+      {/* HASIL: LANDING PAGE & VERIFIKASI */}
+      {step === "landing" ? (
+        <main className="max-w-md mx-auto mt-8 px-4">
+          <div className="bg-white rounded-2xl p-6 shadow-md border border-[#E8D7F5] space-y-5">
+            <div className="text-center">
+              <span className="bg-[#FFC6FF]/40 text-[#6B4E99] text-xs px-3 py-1 rounded-full font-medium">
+                Verifikasi Sahabat
+              </span>
+              <h2 className="text-xl font-semibold text-[#5A3E85] mt-3">
+                Siapa Nama Kamu? ✨
+              </h2>
+              <p className="text-xs text-gray-500 mt-1">
+                Pilih namamu dan unggah foto berdua kita untuk masuk.
+              </p>
+            </div>
+
+            {/* Input Pilih Nama */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Pilih Nama Sahabat:
+              </label>
+              <select
+                className="w-full p-2.5 rounded-xl border border-gray-200 bg-[#FFF9F0] text-sm focus:outline-none focus:ring-2 focus:ring-[#FFC6FF]"
+                value={selectedFriend}
+                onChange={(e) => setSelectedFriend(e.target.value)}
+              >
+                <option value="">-- Pilih Nama --</option>
+                <option value="Siti">Siti</option>
+                <option value="Budi">Budi</option>
+                <option value="Rara">Rara</option>
+                <option value="Daffa">Daffa</option>
+              </select>
+            </div>
+
+            {/* Input Nama Panggilan & Memory */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Nama Panggilan Masa SMP:
+              </label>
+              <input
+                type="text"
+                placeholder="Contoh: Rara SMP"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                className="w-full p-2.5 rounded-xl border border-gray-200 bg-[#FFF9F0] text-sm focus:outline-none focus:ring-2 focus:ring-[#FFC6FF]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Kenangan Terkonyol Saat SMP (Opsional):
+              </label>
+              <textarea
+                placeholder="Pernah dihukum bareng pas upacara..."
+                value={memoryText}
+                onChange={(e) => setMemoryText(e.target.value)}
+                rows={2}
+                className="w-full p-2.5 rounded-xl border border-gray-200 bg-[#FFF9F0] text-sm focus:outline-none focus:ring-2 focus:ring-[#FFC6FF]"
+              />
+            </div>
+
+            {/* Input Upload Foto Berdua */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Upload Foto Berdua Kapan Saja:
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleVerifyUpload}
+                className="block w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#D8F3DC] file:text-[#2D6A4F] hover:file:bg-[#b7e4c7]"
+              />
+              {verifyPhoto && (
+                <div className="mt-3 text-center">
+                  <img
+                    src={verifyPhoto}
+                    alt="Verifikasi"
+                    className="w-32 h-32 object-cover rounded-xl mx-auto border-2 border-[#FFC6FF]"
+                  />
+                  <span className="text-[10px] text-green-600 mt-1 block">
+                    ✓ Foto terpasang
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Tombol Masuk */}
+            <button
+              onClick={handleStart}
+              className="w-full py-3 bg-[#FFC6FF] hover:bg-[#ffb3ff] text-[#5A3E85] font-bold text-sm rounded-xl shadow-sm transition-transform active:scale-95"
+            >
+              Buka Vault Kenangan 💌
+            </button>
+          </div>
+        </main>
+      ) : (
+        /* HASIL: DASHBOARD APLIKASI */
+        <main className="max-w-md mx-auto mt-6 px-4 space-y-6">
+          {/* Greeting Header */}
+          <div className="bg-[#E8D7F5]/50 p-4 rounded-2xl border border-[#E8D7F5] text-center">
+            <h2 className="text-lg font-bold text-[#5A3E85]">
+              Halo, {nickname}! 👋
+            </h2>
+            <p className="text-xs text-gray-600 mt-1">
+              Selamat datang di vault kenangan SMP kita.
+            </p>
+          </div>
+
+          {/* Fitur 1: Amplop Surat Cinta Interaktif */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#E8D7F5] text-center">
+            <h3 className="text-sm font-semibold text-[#5A3E85] mb-3">
+              💌 Surat Khusus Untukmu
+            </h3>
+            <div
+              onClick={() => setIsEnvelopeOpen(!isEnvelopeOpen)}
+              className="cursor-pointer bg-[#FFF9F0] p-4 rounded-xl border-2 border-dashed border-[#FFC6FF] hover:bg-[#FFF0F5] transition"
+            >
+              {!isEnvelopeOpen ? (
+                <div className="py-4">
+                  <span className="text-4xl block mb-2">✉️</span>
+                  <p className="text-xs font-medium text-[#6B4E99]">
+                    Klik untuk membuka pesan manis dariku!
+                  </p>
+                </div>
+              ) : (
+                <div className="text-left space-y-2 animate-fadeIn">
+                  <span className="text-xs text-pink-500 font-bold block">
+                    Kepada: {selectedFriend} ({nickname})
+                  </span>
+                  <p className="text-xs text-gray-700 leading-relaxed font-serif italic">
+                    "Terima kasih ya sudah jadi sahabat yang luar biasa dari
+                    jaman SMP! Banyak banget kenangan seru yang nggak bakal
+                    terlupakan. Tetap jadi orang baik dan sukses selalu ya! 💕"
+                  </p>
+                  <span className="text-[10px] text-gray-400 block text-right mt-2">
+                    – Dari Sahabatmu
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Fitur 2: Interactive Love Sign Button */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#E8D7F5] text-center">
+            <h3 className="text-sm font-semibold text-[#5A3E85] mb-2">
+              Kirim Tanda Cinta 💖
+            </h3>
+            <p className="text-xs text-gray-500 mb-4">
+              Tap tombol di bawah untuk mengirim kasih sayang!
+            </p>
+            <button
+              onClick={handleLoveClick}
+              className="w-20 h-20 bg-[#FFC6FF]/60 hover:bg-[#FFC6FF] text-3xl rounded-full shadow-md mx-auto flex items-center justify-center transition-transform active:scale-90 border-4 border-white"
+            >
+              💖
+            </button>
+            <div className="mt-3 text-xs font-semibold text-[#6B4E99]">
+              {loveCount} Love Dikirim
+            </div>
+          </div>
+
+          {/* Fitur 3: Galeri Foto Polaroid & Upload Sahabat */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#E8D7F5]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-sm font-semibold text-[#5A3E85]">
+                🖼️ Galeri Memori
+              </h3>
+              <label className="cursor-pointer bg-[#D8F3DC] text-[#2D6A4F] text-[11px] px-3 py-1.5 rounded-xl font-semibold hover:bg-[#b7e4c7]">
+                + Tambah Foto
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleGalleryUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
+            {/* Grid Polaroid */}
+            <div className="grid grid-cols-2 gap-3">
+              {gallery.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-[#FFF9F0] p-2 rounded-xl border border-gray-100 shadow-sm text-center"
+                >
+                  <img
+                    src={item.url}
+                    alt={item.caption}
+                    className="w-full h-28 object-cover rounded-lg mb-2"
+                  />
+                  <p className="text-[11px] font-medium text-gray-700 truncate">
+                    {item.caption}
+                  </p>
+                  <span className="text-[9px] text-gray-400 block">
+                    Oleh: {item.sender}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Fitur 4: Buku Pesan Balasan (Guestbook) */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#E8D7F5]">
+            <h3 className="text-sm font-semibold text-[#5A3E85] mb-3">
+              📝 Pesan Balasan Untukku
+            </h3>
+            <div className="flex gap-2 mb-4">
+              <input
+                type="text"
+                placeholder="Tulis pesan kamu di sini..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                className="flex-1 p-2.5 text-xs rounded-xl border border-gray-200 bg-[#FFF9F0] focus:outline-none focus:ring-1 focus:ring-[#FFC6FF]"
+              />
+              <button
+                onClick={handleAddMessage}
+                className="bg-[#E8D7F5] text-[#5A3E85] text-xs px-4 py-2.5 rounded-xl font-semibold hover:bg-[#d8c2ed]"
+              >
+                Kirim
+              </button>
+            </div>
+
+            {/* Feed Pesan */}
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {guestbook.map((msg) => (
+                <div
+                  key={msg.id}
+                  className="bg-[#FFF9F0] p-3 rounded-xl border border-gray-100 text-xs"
+                >
+                  <div className="flex justify-between text-gray-500 text-[10px] mb-1">
+                    <span className="font-bold text-[#6B4E99]">
+                      {msg.name}
+                    </span>
+                    <span>{msg.date}</span>
+                  </div>
+                  <p className="text-gray-700">{msg.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+      )}
+    </div>
+  );
+}
